@@ -1,0 +1,6 @@
+target
+.gradle
+.idea
+.vertx
+.env
+*.versionsBackup
