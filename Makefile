@@ -4,7 +4,7 @@ include .env
 
 # Project variables
 PROJECT_NAME ?= quote-generator
-ORG_NAME ?= docker-production-aws
+ORG_NAME ?= dockerproductionaws
 REPO_NAME ?= quote-generator
 
 # Release settings

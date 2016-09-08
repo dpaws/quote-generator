@@ -1,4 +1,4 @@
-FROM docker-production-aws/microtrader-base
+FROM dockerproductionaws/microtrader-base
 MAINTAINER Justin Menga <justin.menga@gmail.com>
 LABEL application=quote-generator
 
