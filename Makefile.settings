@@ -55,8 +55,8 @@ endif
 # Networking settings
 export NETWORK_NAME := docker_workflow
 export APP_PORT ?= 8000
-NETWORK_SUBNET := 192.168.214.0/24
-NETWORK_GW := 192.168.214.1
+NETWORK_SUBNET := 192.168.215.0/24
+NETWORK_GW := 192.168.215.1
 NETWORK_ID := $(shell docker network ls -f name=$(NETWORK_NAME) -q)
 DEMO_PORT = $$(echo $$(docker-compose $(RELEASE_ARGS) ps -q demo | xargs -I ID docker port ID $(APP_PORT)))
 STATS_PORT = $$(echo $$(docker-compose $(RELEASE_ARGS) ps -q app | xargs -I ID docker port ID 9000))

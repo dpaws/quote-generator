@@ -7,6 +7,9 @@ PROJECT_NAME ?= quote-generator
 ORG_NAME ?= docker-production-aws
 REPO_NAME ?= quote-generator
 
+# Release settings
+export HTTP_PORT ?= 8000
+
 # Common settings
 include Makefile.settings
 
@@ -36,12 +39,97 @@ test: init
 	@ docker cp $$(docker-compose $(TEST_ARGS) ps -q test):/app/target/. target
 	${INFO} "Test complete"
 
+# Builds release image and runs acceptance tests
+release: init
+	${INFO} "Pulling latest images..."
+# @ $(if $(NOPULL_ARG),,docker-compose $(RELEASE_ARGS) pull db agent)
+	${INFO} "Building images..."
+	@ docker-compose $(RELEASE_ARGS) build app
+	@ docker-compose $(RELEASE_ARGS) up -d app
+	${INFO} "Running acceptance tests..."
+# @ docker-compose $(RELEASE_ARGS) up robot
+# @ docker cp $$(docker-compose $(RELEASE_ARGS) ps -q robot):/opt/robot/reports/. reports
+# ${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) robot
+	${INFO} "Acceptance testing complete"
+
 # Cleans environment
 clean:
 	${INFO} "Destroying test environment..."
 	@ docker-compose $(TEST_ARGS) down -v || true
-#	${INFO} "Destroying release environment..."
-# @ docker-compose $(RELEASE_ARGS) down -v || true
+	${INFO} "Destroying release environment..."
+	@ docker-compose $(RELEASE_ARGS) down -v || true
 	${INFO} "Removing dangling images..."
 	@ docker images -q -f dangling=true -f label=application=$(REPO_NAME) | xargs -I ARGS docker rmi -f ARGS
 	${INFO} "Clean complete"
+
+# 'make tag <tag> [<tag>...]' tags development and/or release image with specified tag(s)
+tag: init
+	${INFO} "Tagging development image with tags $(TAG_ARGS)..."
+	@ $(foreach tag,$(TAG_ARGS), echo $(TEST_IMAGE_ID) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME):$(tag);)
+	${INFO} "Tagging release image with tags $(TAG_ARGS)..."
+	@ $(foreach tag,$(TAG_ARGS), echo $(IMAGE_ID) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag);)
+	${INFO} "Tagging complete"
+
+# Login to Docker registry
+login:
+	${INFO} "Logging in to Docker registry $$DOCKER_REGISTRY..."
+	@ docker login -u $$DOCKER_USER -p $$DOCKER_PASSWORD $(DOCKER_REGISTRY_AUTH)
+	${INFO} "Logged in to Docker registry $$DOCKER_REGISTRY"
+
+# Logout of Docker registry
+logout:
+	${INFO} "Logging out of Docker registry $$DOCKER_REGISTRY..."
+	@ docker logout
+	${INFO} "Logged out of Docker registry $$DOCKER_REGISTRY"
+
+# Publishes image(s) tagged using make tag commands
+publish:
+	${INFO} "Publishing development image $(TEST_IMAGE_ID) to $(TEST_IMAGE)..."
+	@ for tag in $(TEST_REPO_EXPR); do echo $$tag | xargs -I TAG docker push TAG; done
+	${INFO} "Publishing release image $(IMAGE_ID) to $(RELEASE_IMAGE)..."
+	@ for tag in $(REPO_EXPR); do echo $$tag | xargs -I TAG docker push TAG; done
+	${INFO} "Publish complete"
+
+# Saves development image build cache to compressed archive.  NOTE: lbzip2 must be installed
+# 	'make save' will save to current working directory.  E.g. ./<repo_name>.bz2
+#   'make save /path/to/my' will save to /path/to/my.  E.g. /path/to/my/<repo_name>.bz2
+#   'make save s3://bucket/path' will save to AWS S3.  E.g. s3://bucket/path/<repo_name>.bz2
+save:
+	${INFO} "Saving development image $(TEST_IMAGE) to $(SAVE_PATH)/$(TEST_REPO_NAME).bz2..."
+	@ $(if $(SAVE_IMAGE_EXISTS),$(TEST_SAVE_CMD),${INFO} "Skipping as development image is not present...")
+	${INFO} "Save complete"
+
+# Loads development image build cache from compressed archive.  NOTE: lbzip2 must be installed
+#   'make load' will load from current working directory.  E.g. ./<repo_name>.bz2
+#   'make load /path/to/my' will load from /path/to/my.  E.g. /path/to/my/<repo_name>.bz2
+#   'make load s3://bucket/path' will load from AWS S3.  E.g. s3://bucket/path/<repo_name>.bz2
+load:
+	${INFO} "Loading cached development image from $(SAVE_PATH)/$(TEST_REPO_NAME).bz2..."
+	@ $(if $(TEST_LOAD_MISSING),${WARNING} "Development image is not available at $(SAVE_PATH)/$(TEST_REPO_NAME).bz2 - skipping load...",)
+	@ $(if $(LOAD_IMAGE_EXISTS),${WARNING} "Development image already present - skipping load...",)
+	@ $(if $(TEST_LOAD_MISSING)$(LOAD_IMAGE_EXISTS),,$(TEST_LOAD_CMD))
+	${INFO} "Load complete"
+
+# Executes docker-compose commands in release environment
+#   e.g. 'make compose ps' is the equivalent of docker-compose -f path/to/dockerfile -p <project-name> ps
+#   e.g. 'make compose run nginx' is the equivalent of docker-compose -f path/to/dockerfile -p <project-name> run nginx
+#
+# Use '--'' after make to pass flags/arguments 
+#   e.g. 'make -- compose run --rm nginx' ensures the '--rm' flag is passed to docker-compose and not interpreted by make
+compose: init
+	${INFO} "Running docker-compose command in release environment..."
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) $(COMPOSE_ARGS)
+
+# Executes docker-compose commands in test environment
+#   e.g. 'make dcompose ps' is the equivalent of docker-compose -f path/to/dockerfile -p <project-name> ps
+#   e.g. 'make dcompose run test' is the equivalent of docker-compose -f path/to/dockerfile -p <project-name> run test
+#
+# Use '--'' after make to pass flags/arguments 
+#   e.g. 'make -- compose run --rm test' ensures the '--rm' flag is passed to docker-compose and not interpreted by make
+dcompose: init
+	${INFO} "Running docker-compose command in test environment..."
+	@ docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) $(DCOMPOSE_ARGS)
+
+# IMPORTANT - ensures arguments are not interpreted as make targets
+%:
+	@:

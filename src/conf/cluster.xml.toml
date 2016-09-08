@@ -1,0 +1,8 @@
+[template]
+ src   = "cluster.xml.tmpl"
+ dest  = "/app/conf/cluster.xml"
+ keys = [
+  "/cluster/aws",
+  "/cluster/aws/group",
+  "/aws/default/region"
+ ]
