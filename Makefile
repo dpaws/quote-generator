@@ -6,6 +6,7 @@ include .env
 PROJECT_NAME ?= quote-generator
 ORG_NAME ?= dockerproductionaws
 REPO_NAME ?= quote-generator
+TEST_REPO_NAME ?= quote-generator-dev
 
 # Release settings
 export HTTP_PORT ?= 8000
