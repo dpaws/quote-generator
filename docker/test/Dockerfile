@@ -1,11 +1,6 @@
-FROM openjdk:8-jdk-alpine
+FROM dockerproductionaws/microtrader-dev
 MAINTAINER Justin Menga <justin.menga@gmail.com>
 LABEL application=quote-generator
-
-# Install system dependencies
-RUN echo "http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories && \
-    apk update && \
-    apk add --no-cache bash maven
 
 # Copy just the POM first
 COPY pom.xml /app/

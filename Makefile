@@ -42,14 +42,14 @@ test: init
 # Builds release image and runs acceptance tests
 release: init
 	${INFO} "Pulling latest images..."
-# @ $(if $(NOPULL_ARG),,docker-compose $(RELEASE_ARGS) pull db agent)
+	@ $(if $(NOPULL_ARG),,docker-compose $(RELEASE_ARGS) pull test agent)
 	${INFO} "Building images..."
-	@ docker-compose $(RELEASE_ARGS) build app
-	@ docker-compose $(RELEASE_ARGS) up -d app
+	@ docker-compose $(RELEASE_ARGS) build $(NOPULL_FLAG) app
 	${INFO} "Running acceptance tests..."
-# @ docker-compose $(RELEASE_ARGS) up robot
-# @ docker cp $$(docker-compose $(RELEASE_ARGS) ps -q robot):/opt/robot/reports/. reports
-# ${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) robot
+	@ docker-compose $(RELEASE_ARGS) run agent
+	@ docker-compose $(RELEASE_ARGS) up test
+	@ docker cp $$(docker-compose $(RELEASE_ARGS) ps -q test):/app/target/surefire-reports/. reports
+	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
 	${INFO} "Acceptance testing complete"
 
 # Cleans environment

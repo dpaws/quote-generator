@@ -1,5 +1,5 @@
+reports
 target
-.gradle
 .idea
 .vertx
 .env

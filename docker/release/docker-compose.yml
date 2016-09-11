@@ -14,6 +14,8 @@ services:
         app_version: ${APP_VERSION}
     environment:
       HTTP_PORT: ${HTTP_PORT}
+      MARKET_DATA_ADDRESS: markets
+      CLUSTER_GROUP_PASSWORD: password
     networks:
       default:
         aliases:
@@ -25,3 +27,24 @@ services:
       - -conf=/app/conf/config.json
       - -Dvertx.hazelcast.config=/app/conf/cluster.xml
       - -cluster
+  test:
+    image: dockerproductionaws/microtrader-test
+    links:
+      - app
+    environment:
+      HTTP_HOST: app
+      HTTP_PORT: ${HTTP_PORT}
+      MARKET_DATA_ADDRESS: markets
+      CLUSTER_GROUP_PASSWORD: password
+    command:
+      - mvn
+      - test
+      - -Dtest=QuoteGeneratorTest
+      - -Dvertx.hazelcast.config=/app/conf/cluster.xml
+  agent:
+    image: dockerproductionaws/ansible
+    links:
+      - app
+    environment:
+      PROBE_HOST: app
+      PROBE_PORT: ${HTTP_PORT}

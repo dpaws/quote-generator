@@ -33,7 +33,7 @@ public class MarketDataVerticle extends AbstractVerticle {
     public void start() {
         // Retrieve the configuration, and initialize the verticle.
         JsonObject config = config();
-        address = config().getString("MARKET_DATA_ADDRESS");
+        address = config().getString("MARKET_DATA_ADDRESS", "markets");
         init(config);
 
         // Every `period` ms, the given Handler is called.
