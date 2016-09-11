@@ -14,22 +14,14 @@ public class MainVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        // Get environment configuration
-        JsonObject environment = new JsonObject();
-        putString("MARKET_DATA_ADDRESS", environment);
-        putInteger("HTTP_PORT", environment);
-
-        // Merge configuration
-        JsonObject config = config().mergeIn(environment);
-
         // Deploy REST Quote API Verticle
-        vertx.deployVerticle(RestQuoteAPIVerticle.class.getName(), new DeploymentOptions().setConfig(config));
+        vertx.deployVerticle(RestQuoteAPIVerticle.class.getName(), new DeploymentOptions().setConfig(config()));
 
         // Deploy Market Data Verticles
-        JsonArray quotes = config.getJsonArray("companies");
+        JsonArray quotes = config().getJsonArray("companies");
         for (Object q : quotes) {
             JsonObject company = (JsonObject) q;
-            company.put("MARKET_DATA_ADDRESS", config.getString("MARKET_DATA_ADDRESS"));
+            company.put("MARKET_DATA_ADDRESS", config().getString("MARKET_DATA_ADDRESS"));
             vertx.deployVerticle(MarketDataVerticle.class.getName(), new DeploymentOptions().setConfig(company));
         }
     }
