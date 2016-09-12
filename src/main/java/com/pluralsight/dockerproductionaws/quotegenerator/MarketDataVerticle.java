@@ -1,4 +1,4 @@
-package com.pluralsight.dpaws.quotegenerator;
+package com.pluralsight.dockerproductionaws.quotegenerator;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.json.JsonObject;
@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
- * Created by jmenga on 5/09/16.
+ * Created by jmenga on 13/09/16.
  */
 public class MarketDataVerticle extends AbstractVerticle {
     String address;

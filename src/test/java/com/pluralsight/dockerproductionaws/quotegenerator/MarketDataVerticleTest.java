@@ -1,4 +1,4 @@
-package com.pluralsight.dpaws.quotegenerator;
+package com.pluralsight.dockerproductionaws.quotegenerator;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;

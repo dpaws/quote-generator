@@ -5,7 +5,7 @@
   <properties>
     <stack.version>3.3.2</stack.version>
     <doc.skip>true</doc.skip>
-    <main.verticle>com.pluralsight.dpaws.quotegenerator.MainVerticle</main.verticle>
+    <main.verticle>com.pluralsight.dockerproductionaws.quotegenerator.MainVerticle</main.verticle>
   </properties>
 
   <groupId>com.pluralsight.docker-production-aws</groupId>
@@ -32,6 +32,10 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-hazelcast</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-service-discovery</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
