@@ -1,5 +1,6 @@
 {
   "MARKET_DATA_ADDRESS": "market",
+  "HTTP_HOST": "localhost",
   "HTTP_PORT": 35000,
   "companies": [
     {

@@ -13,13 +13,11 @@ services:
       args:
         app_version: ${APP_VERSION}
     environment:
+      HTTP_HOST: app
       HTTP_PORT: ${HTTP_PORT}
       MARKET_DATA_ADDRESS: market
+      CLUSTER_GROUP_NAME: quote-generator
       CLUSTER_GROUP_PASSWORD: password
-    networks:
-      default:
-        aliases:
-          - quote-generator
     command:
       - java
       - -jar
@@ -35,6 +33,7 @@ services:
       HTTP_HOST: app
       HTTP_PORT: ${HTTP_PORT}
       MARKET_DATA_ADDRESS: market
+      CLUSTER_GROUP_NAME: quote-generator
       CLUSTER_GROUP_PASSWORD: password
     command:
       - mvn

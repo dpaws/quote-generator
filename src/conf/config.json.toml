@@ -3,5 +3,6 @@
  dest  = "/app/conf/config.json"
  keys = [
   "/market/data/address",
+  "/http/host",
   "/http/port"
  ]
