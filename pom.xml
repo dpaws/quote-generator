@@ -10,7 +10,7 @@
 
   <groupId>com.pluralsight.docker-production-aws</groupId>
   <artifactId>quote-generator</artifactId>
-  <version>0.1.0</version>
+  <version>${revision}</version>
 
   <dependencyManagement>
     <dependencies>
