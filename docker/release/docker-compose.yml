@@ -34,6 +34,7 @@ services:
       MARKET_DATA_ADDRESS: market
       CLUSTER_GROUP_NAME: quote-generator
       CLUSTER_GROUP_PASSWORD: password
+    dns_search: .
     command:
       - mvn
       - test
