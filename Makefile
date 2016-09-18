@@ -46,8 +46,9 @@ release: init
 	@ $(if $(NOPULL_ARG),,docker-compose $(RELEASE_ARGS) pull test agent)
 	${INFO} "Building images..."
 	@ docker-compose $(RELEASE_ARGS) build $(NOPULL_FLAG) app
-	${INFO} "Running acceptance tests..."
+	${INFO} "Starting application..."
 	@ docker-compose $(RELEASE_ARGS) run agent
+	${INFO} "Running acceptance tests..."
 	@ docker-compose $(RELEASE_ARGS) up test
 	@ docker cp $$(docker-compose $(RELEASE_ARGS) ps -q test):/app/target/surefire-reports/. reports
 	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
@@ -70,6 +71,10 @@ tag: init
 	${INFO} "Tagging release image with tags $(TAG_ARGS)..."
 	@ $(foreach tag,$(TAG_ARGS), echo $(IMAGE_ID) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag);)
 	${INFO} "Tagging complete"
+
+
+action:
+	@ echo $(filter-out $@,$(MAKECMDGOALS))
 
 # Login to Docker registry
 login:

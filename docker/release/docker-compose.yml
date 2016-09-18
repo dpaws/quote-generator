@@ -22,7 +22,6 @@ services:
       - java
       - -jar
       - /app/quote-generator-${APP_VERSION}-fat.jar
-      - -conf=/app/conf/config.json
       - -Dvertx.hazelcast.config=/app/conf/cluster.xml
       - -cluster
   test:

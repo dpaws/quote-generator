@@ -1,13 +1,11 @@
 package com.pluralsight.dockerproductionaws.quotegenerator;
 
-import io.vertx.core.DeploymentOptions;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by jmenga on 5/09/16.
  */
 public class MarketDataVerticleTest {
+    private Config config = ConfigFactory.load();
+
     @Test
     public void testComputation() {
         JsonObject json = new JsonObject()
@@ -43,17 +43,14 @@ public class MarketDataVerticleTest {
     }
 
     @Test
-    public void testMarketData() throws IOException {
-        byte[] bytes = Files.readAllBytes(new File("src/test/resources/config.json").toPath());
-        JsonObject config = new JsonObject(new String(bytes, "UTF-8"));
-
+    public void testMarketData() {
         Vertx vertx = Vertx.vertx();
 
         List<JsonObject> mch = new ArrayList<>();
         List<JsonObject> dvn = new ArrayList<>();
         List<JsonObject> bct = new ArrayList<>();
 
-        vertx.eventBus().consumer(config.getString("MARKET_DATA_ADDRESS"), message -> {
+        vertx.eventBus().consumer(config.getString("market.address"), message -> {
             JsonObject quote = (JsonObject) message.body();
             System.out.println(quote.encodePrettily());
             assertThat(quote.getDouble("bid")).isGreaterThan(0);
@@ -73,7 +70,7 @@ public class MarketDataVerticleTest {
             }
         });
 
-        vertx.deployVerticle(MainVerticle.class.getName(), new DeploymentOptions().setConfig(config));
+        vertx.deployVerticle(MainVerticle.class.getName());
 
         await().until(() -> mch.size() > 10);
         await().until(() -> dvn.size() > 10);

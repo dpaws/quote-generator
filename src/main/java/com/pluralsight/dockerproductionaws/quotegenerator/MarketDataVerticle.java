@@ -1,5 +1,6 @@
 package com.pluralsight.dockerproductionaws.quotegenerator;
 
+import com.typesafe.config.ConfigFactory;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.json.JsonObject;
 
@@ -10,6 +11,7 @@ import java.util.Random;
  * Created by jmenga on 13/09/16.
  */
 public class MarketDataVerticle extends AbstractVerticle {
+
     String address;
     String name;
     int variation;
@@ -32,9 +34,8 @@ public class MarketDataVerticle extends AbstractVerticle {
     @Override
     public void start() {
         // Retrieve the configuration, and initialize the verticle.
-        JsonObject config = config();
-        address = config().getString("MARKET_DATA_ADDRESS");
-        init(config);
+        address = ConfigFactory.load().getString("market.address");
+        init(config());
 
         // Every `period` ms, the given Handler is called.
         vertx.setPeriodic(period, l -> {
