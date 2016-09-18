@@ -4,5 +4,5 @@ LABEL application=quote-generator
 
 # Copy application artefacts
 ARG app_version
-ENV app_version $app_version
-COPY target/quote-generator-${app_version}-fat.jar /app/
+LABEL application.version=${app_version}
+COPY target/quote-generator-${app_version}-fat.jar /app/app.jar

@@ -18,12 +18,6 @@ services:
       MARKET_DATA_ADDRESS: market
       CLUSTER_GROUP_NAME: quote-generator
       CLUSTER_GROUP_PASSWORD: password
-    command:
-      - java
-      - -jar
-      - /app/quote-generator-${APP_VERSION}-fat.jar
-      - -Dvertx.hazelcast.config=/app/conf/cluster.xml
-      - -cluster
   test:
     image: dockerproductionaws/microtrader-test
     links:
