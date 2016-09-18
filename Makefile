@@ -14,11 +14,15 @@ export HTTP_PORT ?= 8000
 # Common settings
 include Makefile.settings
 
-.PHONY: version demo test build release clean tag login logout publish compose dcompose database save load
+.PHONY: version version%hash test build release clean tag login logout publish compose dcompose database save load all
 
 # Prints version
 version:
 	@ echo $(APP_VERSION)
+
+# Prints short commit hash
+version%hash:
+	@ echo $$(git rev-parse --short HEAD)
 
 # Creates workflow infrastucture
 init:
@@ -54,6 +58,12 @@ release: init
 	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
 	${INFO} "Acceptance testing complete"
 
+# Executes a full workflow
+all: clean test release
+	@ make tag latest $$(make version) $$(make version:hash)
+	@ make publish
+	@ make clean
+
 # Cleans environment
 clean:
 	${INFO} "Destroying test environment..."
@@ -71,10 +81,6 @@ tag: init
 	${INFO} "Tagging release image with tags $(TAG_ARGS)..."
 	@ $(foreach tag,$(TAG_ARGS), echo $(IMAGE_ID) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag);)
 	${INFO} "Tagging complete"
-
-
-action:
-	@ echo $(filter-out $@,$(MAKECMDGOALS))
 
 # Login to Docker registry
 login:
