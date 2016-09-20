@@ -15,7 +15,7 @@ This will build a development image, run tests and create a fat JAR that is outp
 To run the fat JAR:
 
 ```
-$ java -jar target/quote-generator-0.1.0-fat.jar -conf=src/conf/config.json
+$ java -jar target/quote-generator-20160918203018.5bb4888-fat.jar -conf=src/conf/config.json
 Sep 07, 2016 1:12:32 AM io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer
 INFO: Succeeded in deploying verticle
 Server started

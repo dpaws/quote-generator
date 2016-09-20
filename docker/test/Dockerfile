@@ -3,14 +3,15 @@ MAINTAINER Justin Menga <justin.menga@gmail.com>
 LABEL application=quote-generator
 
 # Copy just the POM first
+# Git plugins are deactivated if APP_VERSION is set
+ENV APP_VERSION=snapshot
 COPY pom.xml /app/
 WORKDIR /app
 
 # Install dependencies 
-# We call versions:set to force dependences for the version plugin to be installed
-RUN mvn versions:set clean install -Drevision=snapshot
+RUN mvn clean install
 
-# Copy the application source and set the app version
-COPY src /app/src
+# Set the app version and copy the application source
 ARG app_version
-RUN mvn versions:set -DnewVersion=${app_version}
+ENV APP_VERSION=${app_version}
+COPY src /app/src
