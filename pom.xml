@@ -8,20 +8,6 @@
     <main.verticle>com.pluralsight.dockerproductionaws.quotegenerator.MainVerticle</main.verticle>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>sonatype-snapshots</id>
-      <name>Sonatype Snapshot Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-          <enabled>false</enabled>
-      </releases>
-      <snapshots>
-          <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <profiles>
     <profile>
       <id>app-version-present</id>
