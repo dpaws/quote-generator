@@ -8,6 +8,20 @@
     <main.verticle>com.pluralsight.dockerproductionaws.quotegenerator.MainVerticle</main.verticle>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>sonatype-snapshots</id>
+      <name>Sonatype Snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+          <enabled>false</enabled>
+      </releases>
+      <snapshots>
+          <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <profiles>
     <profile>
       <id>app-version-present</id>
@@ -122,13 +136,8 @@
     </dependency>
     <dependency>
       <groupId>com.hazelcast</groupId>
-      <artifactId>hazelcast-all</artifactId>
-      <version>3.7.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.hazelcast</groupId>
-      <artifactId>hazelcast-cloud</artifactId>
-      <version>3.6.5</version>
+      <artifactId>hazelcast-aws</artifactId>
+      <version>3.7-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
