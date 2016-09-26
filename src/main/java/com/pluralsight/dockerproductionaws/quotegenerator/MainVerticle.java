@@ -36,7 +36,7 @@ public class MainVerticle extends MicroserviceVerticle {
             System.out.println("Market data service published : " + rec.succeeded());
         });
 
-        publishHttpEndpoint("quotes", config.getString("http.host"), config.getInt("http.public.port"), ar -> {
+        publishHttpEndpoint("quotes", config.getString("http.host"), config.getInt("http.public.port"), config.getString("http.root"), ar -> {
             if (ar.failed()) {
                 ar.cause().printStackTrace();
             } else {
