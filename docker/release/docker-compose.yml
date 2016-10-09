@@ -19,7 +19,7 @@ services:
       CLUSTER_GROUP_NAME: quote-generator
       CLUSTER_GROUP_PASSWORD: password
   test:
-    image: dockerproductionaws/microtrader-test
+    image: dpaws/microtrader-test
     links:
       - app
     environment:
@@ -35,7 +35,7 @@ services:
       - -Dtest=QuoteGeneratorTest
       - -Dvertx.hazelcast.config=/app/conf/cluster.xml
   agent:
-    image: dockerproductionaws/ansible
+    image: dpaws/ansible
     links:
       - app
     environment:

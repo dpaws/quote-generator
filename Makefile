@@ -4,7 +4,7 @@ include .env
 
 # Project variables
 PROJECT_NAME ?= quote-generator
-ORG_NAME ?= dockerproductionaws
+ORG_NAME ?= dpaws
 REPO_NAME ?= quote-generator
 TEST_REPO_NAME ?= quote-generator-dev
 
