@@ -22,6 +22,7 @@ public class MainVerticle extends MicroserviceVerticle {
         JsonArray quotes = new JsonArray(config.getAnyRefList("companies"));
         for (Object q : quotes) {
             JsonObject company = (JsonObject) q;
+            company.put("period", config.getInt("market.period"));
             vertx.deployVerticle(MarketDataVerticle.class.getName(), new DeploymentOptions().setConfig(company));
         }
 
